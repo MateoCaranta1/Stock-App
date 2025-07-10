@@ -25,12 +25,12 @@ export class UserRepository {
 
         const id = crypto.randomUUID();
 
-        // Hacer la contra hasheada.
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
             _id: id, 
             email,
-            password
+            password: hashedPassword
         }).save();
 
         return id;
