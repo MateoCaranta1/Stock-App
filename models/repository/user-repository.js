@@ -11,7 +11,7 @@ const User = Schema('Schema', {
 })
 
 export class UserRepository {
-    static async findByUsername(email) {
+    static async findByEmail(email) {
         const user = await User.findOne({ email });
         return user;
     };
@@ -40,7 +40,7 @@ export class UserRepository {
         Validation.email(email);
         Validation.password(password);
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) throw new Error('Usuario inexistente. Por favor registrese.');
 
         const isValid = await bcrypt.compare(password, user.password);
@@ -57,6 +57,9 @@ class Validation {
         if (typeof email !== 'string') throw new Error('El email debe ser un string.');
         if (email.length === 0) throw new Error('El email no puede estar vacío.')
         if (!email.includes('@')) throw new Error('El email debe contener un "@".');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new Error('El emanil no es válido.');
+        }
     }
 
     static password(password) {
