@@ -57,6 +57,9 @@ class Validation {
         if (typeof email !== 'string') throw new Error('El email debe ser un string.');
         if (email.length === 0) throw new Error('El email no puede estar vacío.')
         if (!email.includes('@')) throw new Error('El email debe contener un "@".');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new Error('El emanil no es válido.');
+        }
     }
 
     static password(password) {
