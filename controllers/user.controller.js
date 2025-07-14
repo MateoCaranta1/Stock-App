@@ -9,16 +9,6 @@ exports.getAll = async (req, res) => {
     }
 };
 
-exports.getByEmail = async (req, res) => {
-    try {
-        const user = await userService.getUserByEmail(req.params.email);
-        if(!user) return res.status(404).json({ error: 'Usuario no encontrado.' });
-        res.json(user);
-    } catch (err) {
-        res.status(500).json({ error: 'Error al obtener usuario.' });
-    }
-};
-
 exports.getById = async (req, res) => {
     try {
         const user = await userService.getUserById(req.params.id);
