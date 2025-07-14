@@ -4,10 +4,6 @@ const getAllUsers = async () => {
     return await User.findAll();
 };
 
-const getUserByEmail = async (email) => {
-    return await User.findByEmail(email);
-};
-
 const getUserById = async (id) => {
     return await User.findById(id);
 };
