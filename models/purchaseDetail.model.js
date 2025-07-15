@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('../models/user.model'); // importa modelo User correctamente
+const User = require('../models/user.model'); 
 
 const Purchase = sequelize.define('Purchase', {
   id: {

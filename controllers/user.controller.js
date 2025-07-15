@@ -1,5 +1,4 @@
 const userService = require('../services/user.service');
-
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -8,7 +7,7 @@ exports.getAll = async (req, res) => {
         const users = await userService.getAllUsers();
         res.json(users);
     } catch (err) {
-        res.status(500).json({ error: 'Erro al obtener los usuarios.' });
+        res.status(500).json({ error: 'Error al obtener los usuarios.' });
     }
 };
 
@@ -25,7 +24,7 @@ exports.getById = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const user = await userService.createUser(req.body);
-        res.status(201).json(id);
+        res.status(201).json({ id: user.id });
     } catch (err) {
         res.status(500).json({ error: 'Error al crear usuario.' });
     }
@@ -43,7 +42,7 @@ exports.login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-        res.status(201).json({ message: 'Bienvenido.' });
+        res.status(200).json({ message: 'Bienvenido.', token });
     } catch (err) {
         res.status(500).json({ error: 'Error al iniciar sesión.' });
     }
