@@ -20,7 +20,6 @@ const login = async (email, password) => {
 
 module.exports = {
     getAllUsers,
-    getUserByEmail,
     getUserById,
     createUser,
     login
