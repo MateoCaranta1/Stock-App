@@ -1,5 +1,8 @@
 const userService = require('../services/user.service');
 
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 exports.getAll = async (req, res) => {
     try {
         const users = await userService.getAllUsers();
@@ -29,9 +32,17 @@ exports.create = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+    const { email, password } = req.body;
+
     try {
         const user = await userService.login(email, password);
-        if (!user) return res.status(404).json({ error: 'Credenciales incorrectas.' });
+        if (!user) return res.status(401).json({ error: 'Credenciales incorrectas.' });
+        
+        const token = jwt.sign(
+            { id: user.id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
         res.status(201).json({ message: 'Bienvenido.' });
     } catch (err) {
         res.status(500).json({ error: 'Error al iniciar sesión.' });
