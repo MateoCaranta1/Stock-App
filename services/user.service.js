@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 
 const getAllUsers = async () => {
     return await User.findAll();
@@ -13,9 +14,13 @@ const createUser = async (data) => {
 };
 
 const login = async (email, password) => {
-    const user = await User.findByEmail(email);
+    const user = await User.findOne({ whre: { email } });
     if (!user) return null;
-    return await User.login(email, password);
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return null;
+
+    return user;
 };
 
 module.exports = {
