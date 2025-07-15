@@ -1,9 +1,10 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../config/db');
 
 const User = sequelize.define('User', {
     id: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        primaryKey: true
         //Ver de usar el UUID
     },
     email: {
