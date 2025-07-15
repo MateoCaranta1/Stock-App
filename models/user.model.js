@@ -1,32 +1,27 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
-
-const SALT_ROUNDS = 10;
 
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
+    primaryKey: true
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: true
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   }
-}, {
-  tableName: 'Users',
-  timestamps: true,
 });
 
-// Hashear password antes de crear usuario
-User.beforeCreate(async (user) => {
-  user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
+User.beforeCreate(async (user, options) => {
+  const SALT_ROUND = 10;
+  user.password = await bcrypt.hash(user.password, SALT_ROUND);
 });
 
 module.exports = User;
