@@ -22,11 +22,14 @@ exports.getById = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
+    console.log('🔹 Body recibido:', req.body);
     try {
         const user = await userService.createUser(req.body);
+        console.log('✅ Usuario creado:', user);
         res.status(201).json({ id: user.id });
     } catch (err) {
-        res.status(500).json({ error: 'Error al crear usuario.' });
+        console.error('❌ Error al crear usuario:', err.message);
+        res.status(500).json({ error: err.message });
     }
 };
 
