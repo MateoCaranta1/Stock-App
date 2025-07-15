@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente');
 });
 
+sequelize.sync() 
+  .then(() => console.log('🟢 DB sincronizada'))
+  .catch(err => console.error('❌ Error al sincronizar DB:', err));
+
 // Conexión y sincronización con la base de datos
 sequelize.authenticate()
   .then(() => {
@@ -44,3 +48,5 @@ sequelize.authenticate()
   .catch(err => {
     console.error('❌ Error al conectar con MySQL:', err);
   });
+
+
