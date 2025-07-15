@@ -1,8 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('../models');
-
-
+const { User } = require('../models');  // Importar solo User
 
 const Purchase = sequelize.define('Purchase', {
   id: {
@@ -11,7 +9,7 @@ const Purchase = sequelize.define('Purchase', {
     primaryKey: true,
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER, // O UUID según User.id
     allowNull: false,
     references: {
       model: User,
@@ -25,6 +23,7 @@ const Purchase = sequelize.define('Purchase', {
   },
 }, {
   timestamps: true,
+  tableName: 'Purchases', // Opcional pero recomendable
 });
 
 module.exports = Purchase;

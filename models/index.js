@@ -1,9 +1,9 @@
+const User = require('./user.model');
 const Sale = require('./sale.model');
 const SaleDetail = require('./saleDetail.model');
 const Purchase = require('./purchase.model');
 const PurchaseDetail = require('./purchaseDetail.model');
 const Product = require('./product.model');
-const User = require('./user.model');
 
 // --- Asociaciones de Ventas ---
 Sale.hasMany(SaleDetail, {
@@ -55,12 +55,11 @@ Purchase.belongsTo(User, {
   foreignKey: 'userId'
 });
 
-// --- Exportar modelos ---
 module.exports = {
+  User,
   Sale,
   SaleDetail,
   Purchase,
   PurchaseDetail,
-  Product,
-  User
+  Product
 };

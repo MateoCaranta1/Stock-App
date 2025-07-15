@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('../models');
 
 const Sale = sequelize.define('Sale', {
   id: {
@@ -9,19 +8,15 @@ const Sale = sequelize.define('Sale', {
     primaryKey: true,
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID, // Debe coincidir con User.id
     allowNull: false,
-    references: {
-      model: User,
-      key: 'id',
-    },
   },
   fecha: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
+  }
 }, {
+  tableName: 'Sales',
   timestamps: true,
 });
 
