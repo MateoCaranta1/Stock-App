@@ -2,9 +2,7 @@ const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 
 const getAllUsers = async () => {
-    return await User.findAll({
-        attributes: { exclude: ['password'] }
-    });
+    return await User.findAll();
 };
 
 const getUserById = async (id) => {
