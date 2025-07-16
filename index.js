@@ -20,10 +20,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Rutas principales
-app.use('/api/productos', productRoutes);
-app.use('/api/ventas', saleRoutes);
-app.use('/api/compras', purchaseRoutes);
-app.use('/api/usuarios', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/sales', saleRoutes);
+app.use('/api/purchases', purchaseRoutes);
+app.use('/api/users', userRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
