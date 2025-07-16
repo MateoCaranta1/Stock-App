@@ -15,7 +15,7 @@ const createUser = async (email, password) => {
     Validation.email(email);
     Validation.password(password);
 
-    return await User.create(email, password);
+    return await User.create({ email, password });
 };
 
 const login = async (email, password) => {
