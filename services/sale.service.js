@@ -4,6 +4,9 @@ const Product = require('../models/product.model');
 const { Sequelize } = require('sequelize');
 
 const createSale = async ({ userId, productos }) => {
+  Validation.userId({ userId });
+  Validation.productos({ productos });
+
   return await Sale.sequelize.transaction(async (t) => {
     const venta = await Sale.create({ userId }, { transaction: t });
 
@@ -38,6 +41,36 @@ const getAllSales = async () => {
     order: [['createdAt', 'DESC']],
   });
 };
+
+class Validation {
+  static userId(data) {
+    if (!data.userId || typeof data.userId !== 'string') {
+      throw new Error('El ID de usuario es obligatorio y debe ser una cadena.');
+    }
+  }
+
+  static productos(data) {
+    const { productos } = data;
+
+    if (!Array.isArray(productos) || productos.length === 0) {
+      throw new Error('Debe incluir al menos un producto en la venta.');
+    }
+
+    productos.forEach((item, index) => {
+      if (!item.productId || typeof item.productId !== 'number') {
+        throw new Error(`El ID del producto en la posición ${index} es inválido.`);
+      }
+
+      if (
+        typeof item.cantidad !== 'number' ||
+        !Number.isInteger(item.cantidad) ||
+        item.cantidad <= 0
+      ) {
+        throw new Error(`La cantidad del producto ID ${item.productId} debe ser un número entero mayor que 0.`);
+      }
+    });
+  }
+}
 
 module.exports = {
   createSale,

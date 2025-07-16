@@ -1,8 +1,15 @@
 const Purchase = require('../models/purchase.model');
 const PurchaseDetail = require('../models/purchaseDetail.model');
 const Product = require('../models/product.model');
+const { User } = require('../models');
 
 const createPurchase = async ({ userId, productos }) => {
+  Validation.userId({ userId });
+  Validation.productos({ productos });
+
+  const user = await User.findByPk(userId);
+  if (!user) throw new Error(`Usuario con ID ${userId} no encontrado.`);
+
   return await Purchase.sequelize.transaction(async (t) => {
     const compra = await Purchase.create({ userId }, { transaction: t });
 
@@ -35,6 +42,40 @@ const getAllPurchases = async () => {
     order: [['createdAt', 'DESC']],
   });
 };
+
+class Validation {
+  static userId(data) {
+    if (!data.userId || typeof data.userId !== 'number')
+      throw new Error('El ID de usuario es obligatorio y debe ser un número.');
+  }
+
+  static productos(data) {
+    const { productos } = data;
+    if (!Array.isArray(productos) || productos.length === 0)
+      throw new Error('Debe haber al menos un producto en la compra.');
+
+    productos.forEach((item, index) => {
+      if (!item.productId || typeof item.productId !== 'number') {
+        throw new Error(`El ID del producto en la posición ${index} es inválido.`);
+      }
+
+      if (
+        typeof item.cantidad !== 'number' ||
+        !Number.isInteger(item.cantidad) ||
+        item.cantidad <= 0
+      ) {
+        throw new Error(`La cantidad del producto ID ${item.productId} debe ser un número entero mayor que 0.`);
+      }
+
+      if (
+        item.precioUnitario !== undefined &&
+        (typeof item.precioUnitario !== 'number' || item.precioUnitario < 0)
+      ) {
+        throw new Error(`El precio unitario del producto ID ${item.productId} debe ser un número mayor o igual a 0.`);
+      }
+    });
+  }
+}
 
 module.exports = {
   createPurchase,
