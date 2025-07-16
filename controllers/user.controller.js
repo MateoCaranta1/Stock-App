@@ -29,7 +29,8 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const user = await userService.createUser(req.body);
+        const { email, password } = req.body;
+        const user = await userService.createUser(email, password);
         console.log('✅ Usuario creado:', user);
         res.status(201).json({ id: user.id });
     } catch (err) {
@@ -50,7 +51,7 @@ exports.login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-        res.status(200).json({ message: 'Bienvenido.', token });
+        res.status(200).json({ message: 'Bienvenido.' });
     } catch (err) {
         res.status(500).json({ error: 'Error al iniciar sesión.' });
     }
