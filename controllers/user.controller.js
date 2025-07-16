@@ -28,7 +28,6 @@ exports.getById = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    console.log('🔹 Body recibido:', req.body);
     try {
         const user = await userService.createUser(req.body);
         console.log('✅ Usuario creado:', user);
@@ -56,3 +55,4 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: 'Error al iniciar sesión.' });
     }
 };
+
