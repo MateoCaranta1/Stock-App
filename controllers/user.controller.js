@@ -17,15 +17,13 @@ exports.getAll = async (req, res) => {
     }
 };
 
-
-
 exports.getById = async (req, res) => {
     try {
         const user = await userService.getUserById(req.params.id);
-        if (!user) return res.status(404).json({ error: '❌ Usuario no encontrado.' });
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado.' });
         res.json(user);
     } catch (err) {
-        res.status(500).json({ error: '❌ Error al obtener usuario.' });
+        res.status(500).json({ error: 'Error al obtener usuario.' });
     }
 };
 
@@ -46,8 +44,8 @@ exports.login = async (req, res) => {
 
     try {
         const user = await userService.login(email, password);
-        if (!user) return res.status(401).json({ error: '❌ Credenciales incorrectas.' });
-        
+        if (!user) return res.status(401).json({ error: 'Credenciales incorrectas.' });
+
         const token = jwt.sign(
             { id: user.id, email: user.email },
             process.env.JWT_SECRET,
@@ -55,6 +53,6 @@ exports.login = async (req, res) => {
         );
         res.status(200).json({ message: 'Bienvenido.', token });
     } catch (err) {
-        res.status(500).json({ error: '❌ Error al iniciar sesión.' });
+        res.status(500).json({ error: 'Error al iniciar sesión.' });
     }
 };
