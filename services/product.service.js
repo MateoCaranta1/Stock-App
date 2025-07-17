@@ -37,25 +37,29 @@ const deleteProduct = async (id) => {
 
 class Validation {
   static nombre(data) {
-    if (!data.nombre || typeof data.nombre !== 'string' || data.nombre.length < 2)
+    if (!data.nombre || typeof data.nombre !== 'string' || data.nombre.trim().length < 2) {
       throw new Error('Nombre inválido.');
-  };
+    }
+  }
 
   static precio(data) {
-    if (!typeof data.precio !== 'number' || data.precio < 0)
+    if (typeof data.precio !== 'number' || data.precio < 0) {
       throw new Error('Precio inválido.');
-  };
+    }
+  }
 
   static cantidad(data) {
-    if (!Number.isInteger(data.cantidad) || data.cantidad < 0)
+    if (!Number.isInteger(data.cantidad) || data.cantidad < 0) {
       throw new Error('Cantidad inválida.');
-  };
+    }
+  }
 
   static stock(data) {
-    if ('stockMinimo' in data && (!Number.isInteger(data.stockMinimo) || data.stockMinimo < 0))
+    if ('stockMinimo' in data && (!Number.isInteger(data.stockMinimo) || data.stockMinimo < 0)) {
       throw new Error('Stock mínimo inválido.');
-  };
-};
+    }
+  }
+}
 
 module.exports = {
   getAllProducts,

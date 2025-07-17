@@ -4,8 +4,8 @@ const Product = require('../models/product.model');
 const { User } = require('../models');
 
 const createPurchase = async ({ userId, productos }) => {
-  Validation.userId({ userId });
-  Validation.productos({ productos });
+  Validation.userId(userId);
+  Validation.productos(productos);
 
   const user = await User.findByPk(userId);
   if (!user) throw new Error(`Usuario con ID ${userId} no encontrado.`);
@@ -36,21 +36,19 @@ const createPurchase = async ({ userId, productos }) => {
 
 const getAllPurchases = async () => {
   return await Purchase.findAll({
-    include: {
-      model: PurchaseDetail,
-    },
+    include: PurchaseDetail,
     order: [['createdAt', 'DESC']],
   });
 };
 
 class Validation {
-  static userId(data) {
-    if (!data.userId || typeof data.userId !== 'number')
+  static userId(userId) {
+    if (!userId || typeof userId !== 'number') {
       throw new Error('El ID de usuario es obligatorio y debe ser un número.');
+    }
   }
 
-  static productos(data) {
-    const { productos } = data;
+  static productos(productos) {
     if (!Array.isArray(productos) || productos.length === 0)
       throw new Error('Debe haber al menos un producto en la compra.');
 
