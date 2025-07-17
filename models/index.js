@@ -5,7 +5,7 @@ const SaleDetail = require('./saleDetail.model');
 const Purchase = require('./purchase.model');
 const PurchaseDetail = require('./purchaseDetail.model');
 
-// --- Asociaciones de Ventas ---
+// Asociaciones de Ventas
 Sale.hasMany(SaleDetail, {
   foreignKey: 'saleId',
   as: 'detalles',
@@ -18,19 +18,23 @@ SaleDetail.belongsTo(Sale, {
 
 Product.hasMany(SaleDetail, {
   foreignKey: 'productId',
+  as: 'detallesVenta',
 });
 SaleDetail.belongsTo(Product, {
   foreignKey: 'productId',
+  as: 'productoVenta',
 });
 
 User.hasMany(Sale, {
   foreignKey: 'userId',
+  as: 'ventas',
 });
 Sale.belongsTo(User, {
   foreignKey: 'userId',
+  as: 'usuarioVenta',
 });
 
-// --- Asociaciones de Compras ---
+// Asociaciones de Compras
 Purchase.hasMany(PurchaseDetail, {
   foreignKey: 'purchaseId',
   as: 'detalles',
@@ -43,19 +47,23 @@ PurchaseDetail.belongsTo(Purchase, {
 
 Product.hasMany(PurchaseDetail, {
   foreignKey: 'productId',
+  as: 'detallesCompra',
 });
 PurchaseDetail.belongsTo(Product, {
   foreignKey: 'productId',
+  as: 'productoCompra',
 });
 
 User.hasMany(Purchase, {
   foreignKey: 'userId',
+  as: 'compras',
 });
 Purchase.belongsTo(User, {
   foreignKey: 'userId',
+  as: 'usuarioCompra',
 });
 
-// --- Exportación centralizada de modelos ---
+// Exportación centralizada de modelos
 module.exports = {
   User,
   Product,
