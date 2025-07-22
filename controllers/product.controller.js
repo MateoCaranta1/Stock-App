@@ -29,12 +29,16 @@ exports.create = async (req, res) => {
     const product = await productService.createProduct(req.body);
     res.status(201).json(product);
   } catch (err) {
-    if (err.message.includes('inválido')) {
+
+    if (err.message) {
       return res.status(400).json({ error: err.message });
     }
+
     res.status(500).json({ error: 'Error al crear producto' });
   }
 };
+
+
 
 exports.update = async (req, res) => {
   const id = Number(req.params.id);
