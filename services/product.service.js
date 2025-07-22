@@ -22,10 +22,7 @@ const createProduct = async (data) => {
 };
 
 const updateProduct = async (id, data) => {
-  Validation.nombre(data);
-  Validation.precio(data);
-  Validation.cantidad(data);
-  Validation.stock(data);
+  Validation.validarTodo(data);
 
   const product = await Product.findByPk(id);
   if (!product) return null;
