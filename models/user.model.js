@@ -24,4 +24,11 @@ User.beforeCreate(async (user, options) => {
   user.password = await bcrypt.hash(user.password, SALT_ROUND);
 });
 
+User.beforeUpdate(async (user, options) => {
+  if (user.changed('password')) {
+    const SALT_ROUND = 10;
+    user.password = await bcrypt.hash(user.password, SALT_ROUND);
+  }
+});
+
 module.exports = User;

@@ -15,22 +15,31 @@ const createUser = async (email, password) => {
   Validation.email(email);
   Validation.password(password);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return await User.create({ email, password: hashedPassword });
+  return await User.create({ email, password });
 };
 
 const login = async (email, password) => {
   Validation.email(email);
   Validation.password(password);
 
+  console.log('Intentando login con email:', email);
+
   const user = await User.findOne({ where: { email } });
-  if (!user) return null;
+  if (!user) {
+    console.log('No se encontró usuario con email:', email);
+    return null;
+  }
 
   const match = await bcrypt.compare(password, user.password);
-  if (!match) return null;
+  if (!match) {
+    console.log('Contraseña incorrecta para usuario:', email);
+    return null;
+  }
 
+  console.log('Login exitoso para usuario:', email);
   return user;
 };
+
 
 class Validation {
   static email(email) {
