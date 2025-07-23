@@ -17,6 +17,11 @@ const createUser = async (email, password) => {
   Validation.email(email);
   Validation.password(password);
 
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) {
+    throw new Error('El email ya esta registrado.');
+  }
+
   return await User.create({ email, password });
 };
 
