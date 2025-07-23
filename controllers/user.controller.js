@@ -26,10 +26,10 @@ exports.create = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userService.createUser(email, password);
-    res.status(201).json({ id: user.id });
+    res.status(201).json({ message: 'Usuario creado con éxito!' });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
-      res.status(400).json({ error: 'El email ya está registrado' });
+      res.status(400).json({ error: 'El email ya está registrado.' });
     } else {
       res.status(500).json({ error: err.message });
     }
