@@ -8,7 +8,9 @@ const getAllUsers = async () => {
 };
 
 const getUserById = async (id) => {
-  return await User.findByPk(id);
+  return await User.findByPk(id,{
+    attributes: { exclude: ['password'] }
+  });
 };
 
 const createUser = async (email, password) => {
