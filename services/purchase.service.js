@@ -2,15 +2,17 @@ const Purchase = require('../models/purchase.model');
 const PurchaseDetail = require('../models/purchaseDetail.model');
 const Product = require('../models/product.model');
 const { User } = require('../models');
+const { validate: isUUID } = require('uuid');
 
 const createPurchase = async ({ userId, productos }) => {
-  Validation.userId(userId);
+  Validation.validateUserId(userId);
   Validation.productos(productos);
 
   const user = await User.findByPk(userId);
   if (!user) throw new Error(`Usuario con ID ${userId} no encontrado.`);
 
   return await Purchase.sequelize.transaction(async (t) => {
+    console.log('📦 userId recibido en service:', userId);
     const compra = await Purchase.create({ userId }, { transaction: t });
 
     for (const item of productos) {
@@ -36,15 +38,25 @@ const createPurchase = async ({ userId, productos }) => {
 
 const getAllPurchases = async () => {
   return await Purchase.findAll({
-    include: PurchaseDetail,
+    include: {
+      model: PurchaseDetail,
+      as: 'detalles',
+    },
     order: [['createdAt', 'DESC']],
   });
+
 };
 
 class Validation {
-  static userId(userId) {
-    if (!userId || typeof userId !== 'number') {
-      throw new Error('El ID de usuario es obligatorio y debe ser un número.');
+  static validateUserId(userId) {
+    if (
+      userId === undefined ||
+      userId === null ||
+      typeof userId === 'number' ||
+      `${userId}`.trim() === '' ||
+      !isUUID(userId)
+    ) {
+      throw new Error('El ID de usuario es obligatorio y debe ser válido.');
     }
   }
 
@@ -53,8 +65,8 @@ class Validation {
       throw new Error('Debe haber al menos un producto en la compra.');
 
     productos.forEach((item, index) => {
-      if (!item.productId || typeof item.productId !== 'number') {
-        throw new Error(`El ID del producto en la posición ${index} es inválido.`);
+      if (typeof item.productId !== 'number') {
+        throw new Error(`El ID del producto en la posición ${index + 1} es inválido.`);
       }
 
       if (

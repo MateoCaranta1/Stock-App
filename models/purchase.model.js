@@ -9,12 +9,8 @@ const Purchase = sequelize.define('Purchase', {
     primaryKey: true,
   },
   userId: {
-    type: DataTypes.INTEGER, // O UUID según User.id
+    type: DataTypes.UUID, // Debe coincidir con User.id
     allowNull: false,
-    references: {
-      model: User,
-      key: 'id',
-    },
   },
   fecha: {
     type: DataTypes.DATE,

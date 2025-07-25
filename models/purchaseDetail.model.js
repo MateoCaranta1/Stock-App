@@ -1,28 +1,40 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('../models/user.model'); 
+const { Purchase} = require('../models/purchase.model'); 
+const { Product } = require('../models/product.model')
 
-const Purchase = sequelize.define('Purchase', {
+const PurchaseDetail = sequelize.define('PurchaseDetail', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  userId: {
-    type: DataTypes.UUID,
+  purchaseId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: User,
+      model: Purchase,
       key: 'id',
     },
   },
-  fecha: {
-    type: DataTypes.DATE,
+  productId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: DataTypes.NOW,
+    references: {
+      model: Product,
+      key: 'id',
+    },
+  },
+  cantidad: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  precioUnitario: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
   },
 }, {
-  timestamps: true,
+  timestamps: false,
 });
 
-module.exports = Purchase;
+module.exports = PurchaseDetail;
