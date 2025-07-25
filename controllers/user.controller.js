@@ -53,3 +53,9 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Error al iniciar sesión.' });
   }
 };
+
+exports.logout = async (req, res) => {
+  res
+    .clearCookie('access_token')
+    .json({ message: 'Se cerro sesión con éxito' });
+}

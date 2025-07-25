@@ -1,13 +1,14 @@
 const Sale = require('../models/sale.model');
 const SaleDetail = require('../models/saleDetail.model');
 const Product = require('../models/product.model');
+const { validate: isUUID } = require('uuid');
 
 const createSale = async ({ userId, productos }) => {
   Validation.validateUserId(userId);
   Validation.validateProductos(productos);
 
   return await Sale.sequelize.transaction(async (t) => {
-    const venta = await Sale.create({ userId }, { transaction: t });
+    const venta = await Sale.create({ userId, fecha: new Date() }, { transaction: t });
 
     for (const item of productos) {
       const producto = await Product.findByPk(item.productId, { transaction: t });
@@ -54,8 +55,9 @@ class Validation {
     if (
       userId === undefined ||
       userId === null ||
-      !(typeof userId === 'number' || typeof userId === 'string') ||
-      `${userId}`.trim() === ''
+      typeof userId === 'number' || 
+      `${userId}`.trim() === '' ||
+      !isUUID(userId)
     ) {
       throw new Error('El ID de usuario es obligatorio y debe ser válido.');
     }
