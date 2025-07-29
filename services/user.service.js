@@ -29,21 +29,16 @@ const login = async (email, password) => {
   Validation.email(email);
   Validation.password(password);
 
-  console.log('Intentando login con email:', email);
-
   const user = await User.findOne({ where: { email } });
   if (!user) {
-    console.log('No se encontró usuario con email:', email);
     return null;
   }
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
-    console.log('Contraseña incorrecta para usuario:', email);
     return null;
   }
 
-  console.log('Login exitoso para usuario:', email);
   return user;
 };
 

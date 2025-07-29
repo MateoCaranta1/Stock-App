@@ -4,49 +4,6 @@ const Product = require('../models/product.model');
 const { User } = require('../models');
 const { validate: isUUID } = require('uuid');
 
-const createPurchase = async ({ userId, productos }) => {
-  Validation.validateUserId(userId);
-  Validation.productos(productos);
-
-  const user = await User.findByPk(userId);
-  if (!user) throw new Error(`Usuario con ID ${userId} no encontrado.`);
-
-  return await Purchase.sequelize.transaction(async (t) => {
-    console.log('📦 userId recibido en service:', userId);
-    const compra = await Purchase.create({ userId }, { transaction: t });
-
-    for (const item of productos) {
-      const producto = await Product.findByPk(item.productId, { transaction: t });
-      if (!producto) throw new Error(`Producto ID ${item.productId} no encontrado.`);
-
-      await producto.update(
-        { cantidad: producto.cantidad + item.cantidad },
-        { transaction: t }
-      );
-
-      await PurchaseDetail.create({
-        purchaseId: compra.id,
-        productId: item.productId,
-        cantidad: item.cantidad,
-        precioUnitario: item.precioUnitario || producto.precio,
-      }, { transaction: t });
-    }
-
-    return compra;
-  });
-};
-
-const getAllPurchases = async () => {
-  return await Purchase.findAll({
-    include: {
-      model: PurchaseDetail,
-      as: 'detalles',
-    },
-    order: [['createdAt', 'DESC']],
-  });
-
-};
-
 class Validation {
   static validateUserId(userId) {
     if (
@@ -87,7 +44,49 @@ class Validation {
   }
 }
 
+const createPurchase = async ({ userId, productos }) => {
+  Validation.validateUserId(userId);
+  Validation.productos(productos);
+
+  const user = await User.findByPk(userId);
+  if (!user) throw new Error(`Usuario con ID ${userId} no encontrado.`);
+
+  return await Purchase.sequelize.transaction(async (t) => {
+    const compra = await Purchase.create({ userId }, { transaction: t });
+
+    for (const item of productos) {
+      const producto = await Product.findByPk(item.productId, { transaction: t });
+      if (!producto) throw new Error(`Producto ID ${item.productId} no encontrado.`);
+
+      await producto.update(
+        { cantidad: producto.cantidad + item.cantidad },
+        { transaction: t }
+      );
+
+      await PurchaseDetail.create({
+        purchaseId: compra.id,
+        productId: item.productId,
+        cantidad: item.cantidad,
+        precioUnitario: item.precioUnitario || producto.precio,
+      }, { transaction: t });
+    }
+
+    return compra;
+  });
+};
+
+const getAllPurchases = async () => {
+  return await Purchase.findAll({
+    include: {
+      model: PurchaseDetail,
+      as: 'detalles',
+    },
+    order: [['createdAt', 'DESC']],
+  });
+};
+
 module.exports = {
   createPurchase,
   getAllPurchases,
+  Validation,
 };
