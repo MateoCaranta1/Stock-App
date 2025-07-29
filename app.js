@@ -19,6 +19,8 @@ const saleRoutes = require('./routes/sale.routes');
 const purchaseRoutes = require('./routes/purchase.routes');
 const userRoutes = require('./routes/user.routes');
 const reportRoutes = require('./routes/report.routes');
+const { summary } = require('./services/summary.service');
+const { sendMail } = require('./utils/mailer');
 
 // Rutas principales
 app.use('/api/products', productRoutes);
@@ -36,6 +38,13 @@ app.get('/', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('❌ Error global:', err.stack);
   res.status(err.status || 500).json({ error: err.message || 'Error interno del servidor' });
+});
+
+// Manejo del mailing
+cron.schedule('59 23 * * *', async () => {
+  const resumen = await summary();
+  await sendMail('Resumen diario de stock', resumen);
+  console.log('Resumen enviado.');
 });
 
 // Conexión y sincronización con la base de datos
