@@ -41,11 +41,11 @@ app.use((err, req, res, next) => {
 });
 
 // Manejo del mailing
-cron.schedule('59 23 * * *', async () => {
-  const resumen = await summary();
-  await sendMail('Resumen diario de stock', resumen);
-  console.log('Resumen enviado.');
-});
+// cron.schedule('59 23 * * *', async () => {
+//   const resumen = await summary();
+//   await sendMail('Resumen diario de stock', resumen);
+//   console.log('Resumen enviado.');
+// });
 
 // Conexión y sincronización con la base de datos
 sequelize.authenticate()
