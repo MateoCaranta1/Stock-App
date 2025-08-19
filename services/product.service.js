@@ -18,7 +18,13 @@ const createProduct = async (data) => {
     throw new Error('Ya existe un producto con ese nombre');
   }
 
-  return await Product.create(data);
+  const newProduct = await Product.create(data);
+
+  if (newProduct.cantidad <= newProduct.stockMinimo) {
+    newProduct.dataValues.aviso = `⚠️ El producto "${newProduct.nombre}" está en el umbral de stock mínimo.`;
+  }
+
+  return newProduct;
 };
 
 const updateProduct = async (id, data) => {
@@ -26,7 +32,14 @@ const updateProduct = async (id, data) => {
 
   const product = await Product.findByPk(id);
   if (!product) return null;
-  return await product.update(data);
+
+  const updated = await product.update(data);
+
+  if (updated.cantidad <= updated.stockMinimo) {
+    updated.dataValues.aviso = `⚠️ El producto "${updated.nombre}" está en el umbral de stock mínimo.`;
+  }
+
+  return updated;
 };
 
 const deleteProduct = async (id) => {
