@@ -9,6 +9,7 @@ const createSale = async ({ userId, productos }) => {
 
   return await Sale.sequelize.transaction(async (t) => {
     const venta = await Sale.create({ userId, fecha: new Date() }, { transaction: t });
+    const avisos = []; // 👈 arreglo para acumular notificaciones
 
     for (const item of productos) {
       const producto = await Product.findByPk(item.productId, { transaction: t });
@@ -21,10 +22,16 @@ const createSale = async ({ userId, productos }) => {
         throw new Error(`Stock insuficiente para el producto "${producto.nombre}" (ID ${item.productId}).`);
       }
 
+      const nuevaCantidad = producto.cantidad - item.cantidad;
       await producto.update(
-        { cantidad: producto.cantidad - item.cantidad },
+        { cantidad: nuevaCantidad },
         { transaction: t }
       );
+
+      // Aviso si está en o por debajo del mínimo
+      if (nuevaCantidad <= producto.stockMinimo) {
+        avisos.push(`⚠️ El producto "${producto.nombre}" alcanzó el stock mínimo (${nuevaCantidad} unidades).`);
+      }
 
       await SaleDetail.create({
         saleId: venta.id,
@@ -34,7 +41,7 @@ const createSale = async ({ userId, productos }) => {
       }, { transaction: t });
     }
 
-    return venta;
+    return { venta, avisos };
   });
 };
 
