@@ -20,29 +20,37 @@ class Validation {
   static productos(productos) {
     if (!Array.isArray(productos) || productos.length === 0)
       throw new Error('Debe haber al menos un producto en la compra.');
-
+  
     productos.forEach((item, index) => {
-      if (typeof item.productId !== 'number') {
-        throw new Error(`El ID del producto en la posición ${index + 1} es inválido.`);
+      // Si no hay productId, debe tener nombre
+      if (!item.productId) {
+        if (!item.nombre || typeof item.nombre !== 'string') {
+          throw new Error(`El producto en la posición ${index + 1} debe tener un nombre.`);
+        }
+      } else {
+        if (typeof item.productId !== 'number') {
+          throw new Error(`El ID del producto en la posición ${index + 1} es inválido.`);
+        }
       }
-
+  
       if (
         typeof item.cantidad !== 'number' ||
         !Number.isInteger(item.cantidad) ||
         item.cantidad <= 0
       ) {
-        throw new Error(`La cantidad del producto ID ${item.productId} debe ser un número entero mayor que 0.`);
+        throw new Error(`La cantidad del producto en la posición ${index + 1} debe ser un número entero mayor que 0.`);
       }
-
+  
       if (
         item.precioUnitario !== undefined &&
         (typeof item.precioUnitario !== 'number' || item.precioUnitario < 0)
       ) {
-        throw new Error(`El precio unitario del producto ID ${item.productId} debe ser un número mayor o igual a 0.`);
+        throw new Error(`El precio unitario del producto en la posición ${index + 1} debe ser un número mayor o igual a 0.`);
       }
     });
   }
-}
+  
+};
 
 const createPurchase = async ({ userId, productos }) => {
   Validation.validateUserId(userId);
@@ -55,17 +63,32 @@ const createPurchase = async ({ userId, productos }) => {
     const compra = await Purchase.create({ userId }, { transaction: t });
 
     for (const item of productos) {
-      const producto = await Product.findByPk(item.productId, { transaction: t });
-      if (!producto) throw new Error(`Producto ID ${item.productId} no encontrado.`);
+      let producto;
 
-      await producto.update(
-        { cantidad: producto.cantidad + item.cantidad },
-        { transaction: t }
-      );
+      if (item.productId) {
+        // Si existe el ID, buscar producto
+        producto = await Product.findByPk(item.productId, { transaction: t });
+        if (!producto) throw new Error(`Producto ID ${item.productId} no encontrado.`);
+        // Actualizar stock
+        await producto.update(
+          { cantidad: producto.cantidad + item.cantidad },
+          { transaction: t }
+        );
+      } else {
+        // Si no hay productId, crear producto nuevo
+        producto = await Product.create({
+          nombre: item.nombre,
+          categoria: item.categoria || null,
+          precio: item.precioUnitario || 0,
+          cantidad: item.cantidad,
+          stockMinimo: item.stockMinimo || 5,
+        }, { transaction: t });
+      }
 
+      // Crear detalle de la compra
       await PurchaseDetail.create({
         purchaseId: compra.id,
-        productId: item.productId,
+        productId: producto.id,
         cantidad: item.cantidad,
         precioUnitario: item.precioUnitario || producto.precio,
       }, { transaction: t });
@@ -75,11 +98,13 @@ const createPurchase = async ({ userId, productos }) => {
   });
 };
 
-const getAllPurchases = async () => {
+const getAllPurchases = async (userId) => {
   return await Purchase.findAll({
+    where: { userId },
     include: {
       model: PurchaseDetail,
       as: 'detalles',
+      include: ['productoCompra'],
     },
     order: [['createdAt', 'DESC']],
   });

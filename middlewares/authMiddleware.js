@@ -18,23 +18,8 @@ const authToken = (req, res, next) => {
         return res.status(403).json({ error: 'Token inválido o expirado' });
       }
 
-      if (payload.token) {
-        try {
-          const innerPayload = jwt.decode(payload.token);
-
-          if (!innerPayload) {
-            return res.status(403).json({ error: 'Token interno inválido' });
-          }
-
-          req.user = innerPayload;
-          return next();
-
-        } catch (innerErr) {
-          return res.status(403).json({ error: 'Error decodificando token interno' });
-        }
-      }
-
-      req.user = payload;
+      req.user = payload;     
+      req.userId = payload.id; 
       next();
     });
   } catch (error) {
@@ -44,3 +29,4 @@ const authToken = (req, res, next) => {
 };
 
 module.exports = authToken;
+
