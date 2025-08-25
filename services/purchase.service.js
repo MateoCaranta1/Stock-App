@@ -80,7 +80,9 @@ const createPurchase = async ({ userId, productos }) => {
         if (producto) {
           // Si ya existe por nombre, solo actualizar stock
           await producto.update(
-            { cantidad: producto.cantidad + item.cantidad },
+            { cantidad: producto.cantidad + item.cantidad, 
+              precio: item.precioUnitario || producto.precio
+            },
             { transaction: t }
           );
         } else {
