@@ -19,8 +19,6 @@ const saleRoutes = require('./routes/sale.routes');
 const purchaseRoutes = require('./routes/purchase.routes');
 const userRoutes = require('./routes/user.routes');
 const reportRoutes = require('./routes/report.routes');
-const { summary } = require('./services/summary.service');
-const { sendMail } = require('./utils/mailer');
 
 // Rutas principales
 app.use('/api/products', productRoutes);

@@ -53,7 +53,14 @@ PurchaseDetail.belongsTo(Product, {
   as: 'productoCompra',
 });
 
-
+User.hasMany(Purchase, {
+  foreignKey: 'userId',
+  as: 'compras',
+});
+Purchase.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'usuarioCompra',
+});
 
 // Exportación centralizada de modelos
 module.exports = {
