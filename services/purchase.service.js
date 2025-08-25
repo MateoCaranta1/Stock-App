@@ -66,7 +66,7 @@ const createPurchase = async ({ userId, productos }) => {
       let producto;
 
       if (item.productId) {
-        // Si existe el ID, buscar producto
+        // Producto existente por ID
         producto = await Product.findByPk(item.productId, { transaction: t });
         if (!producto) throw new Error(`Producto ID ${item.productId} no encontrado.`);
         // Actualizar stock
@@ -75,14 +75,24 @@ const createPurchase = async ({ userId, productos }) => {
           { transaction: t }
         );
       } else {
-        // Si no hay productId, crear producto nuevo
-        producto = await Product.create({
-          nombre: item.nombre,
-          categoria: item.categoria || null,
-          precio: item.precioUnitario || 0,
-          cantidad: item.cantidad,
-          stockMinimo: item.stockMinimo || 5,
-        }, { transaction: t });
+        // Producto nuevo: buscar por nombre para evitar duplicados
+        producto = await Product.findOne({ where: { nombre: item.nombre }, transaction: t });
+        if (producto) {
+          // Si ya existe por nombre, solo actualizar stock
+          await producto.update(
+            { cantidad: producto.cantidad + item.cantidad },
+            { transaction: t }
+          );
+        } else {
+          // Si no existe, crear nuevo producto
+          producto = await Product.create({
+            nombre: item.nombre,
+            categoria: item.categoria || null,
+            precio: item.precioUnitario || 0,
+            cantidad: item.cantidad,
+            stockMinimo: item.stockMinimo || 5,
+          }, { transaction: t });
+        }
       }
 
       // Crear detalle de la compra
@@ -97,6 +107,7 @@ const createPurchase = async ({ userId, productos }) => {
     return compra;
   });
 };
+
 
 const getAllPurchases = async (userId) => {
   return await Purchase.findAll({
