@@ -1,73 +1,42 @@
-const User = require('./user.model');
-const Product = require('./product.model');
-const Sale = require('./sale.model');
-const SaleDetail = require('./saleDetail.model');
-const Purchase = require('./purchase.model');
-const PurchaseDetail = require('./purchaseDetail.model');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-// Asociaciones de Ventas
-Sale.hasMany(SaleDetail, {
-  foreignKey: 'saleId',
-  as: 'detalles',
-  onDelete: 'CASCADE',
-});
-SaleDetail.belongsTo(Sale, {
-  foreignKey: 'saleId',
-  as: 'venta',
-});
+// Inicializar modelos
+const User = require('./user.model')(sequelize, DataTypes);
+const Product = require('./product.model')(sequelize, DataTypes);
+const Sale = require('./sale.model')(sequelize, DataTypes);
+const SaleDetail = require('./saleDetail.model')(sequelize, DataTypes);
+const Purchase = require('./purchase.model')(sequelize, DataTypes);
+const PurchaseDetail = require('./purchaseDetail.model')(sequelize, DataTypes);
 
-Product.hasMany(SaleDetail, {
-  foreignKey: 'productId',
-  as: 'detallesVenta',
-});
-SaleDetail.belongsTo(Product, {
-  foreignKey: 'productId',
-  as: 'productoVenta',
-});
+// -------- Asociaciones -----------
 
-User.hasMany(Sale, {
-  foreignKey: 'userId',
-  as: 'ventas',
-});
-Sale.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'usuarioVenta',
-});
+// Ventas
+User.hasMany(Sale, { foreignKey: 'userId', as: 'ventas' });
+Sale.belongsTo(User, { foreignKey: 'userId', as: 'usuarioVenta' });
 
-// Asociaciones de Compras
-Purchase.hasMany(PurchaseDetail, {
-  foreignKey: 'purchaseId',
-  as: 'detalles',
-});
-PurchaseDetail.belongsTo(Purchase, {
-  foreignKey: 'purchaseId',
-  as: 'compra',
-});
+Sale.hasMany(SaleDetail, { foreignKey: 'saleId', as: 'detalles', onDelete: 'CASCADE' });
+SaleDetail.belongsTo(Sale, { foreignKey: 'saleId', as: 'venta' });
 
-Product.hasMany(PurchaseDetail, {
-  foreignKey: 'productId',
-  as: 'detallesCompra',
-});
-PurchaseDetail.belongsTo(Product, {
-  foreignKey: 'productId',
-  as: 'productoCompra',
-});
+Product.hasMany(SaleDetail, { foreignKey: 'productId', as: 'detallesVenta' });
+SaleDetail.belongsTo(Product, { foreignKey: 'productId', as: 'productoVenta' });
 
-User.hasMany(Purchase, {
-  foreignKey: 'userId',
-  as: 'compras',
-});
-Purchase.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'usuarioCompra',
-});
+// Compras
+User.hasMany(Purchase, { foreignKey: 'userId', as: 'compras' });
+Purchase.belongsTo(User, { foreignKey: 'userId', as: 'usuarioCompra' });
 
-// Exportación centralizada de modelos
+Purchase.hasMany(PurchaseDetail, { foreignKey: 'purchaseId', as: 'detalles' });
+PurchaseDetail.belongsTo(Purchase, { foreignKey: 'purchaseId', as: 'compra' });
+
+Product.hasMany(PurchaseDetail, { foreignKey: 'productId', as: 'detallesCompra' });
+PurchaseDetail.belongsTo(Product, { foreignKey: 'productId', as: 'productoCompra' });
+
 module.exports = {
+  sequelize,
   User,
   Product,
   Sale,
   SaleDetail,
   Purchase,
-  PurchaseDetail,
+  PurchaseDetail
 };

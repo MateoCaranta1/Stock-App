@@ -16,7 +16,8 @@ res.status(201).json({
 
 exports.getAll = async (req, res) => {
   try {
-    const ventas = await saleService.getAllSales();
+    const userId = req.userId;
+    const ventas = await saleService.getAllSales(userId);
     res.json(ventas);
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener ventas' });
