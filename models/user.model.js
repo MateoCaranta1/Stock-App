@@ -1,7 +1,3 @@
-const bcrypt = require('bcrypt');
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     id: {
@@ -18,10 +14,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    resetToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    resetTokenExpires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   }, {
     tableName: 'Users',
     timestamps: true,
   });
+
+  const bcrypt = require('bcrypt');
 
   User.beforeCreate(async (user) => {
     const SALT_ROUND = 10;

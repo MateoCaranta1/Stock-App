@@ -1,6 +1,7 @@
 const userService = require('../services/user.service');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const bcrypt = require('bcrypt');
+const transporter = require('../config/mailer');
 
 exports.getAll = async (req, res) => {
   try {
@@ -58,5 +59,42 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
   res
     .clearCookie('access_token')
-    .json({ message: 'Se cerro sesión con éxito' });
-}
+    .json({ message: 'Se cerró sesión con éxito' });
+};
+
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const token = await userService.generateResetToken(email);
+
+    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+
+    await transporter.sendMail({
+      from: '"Soporte App" <no-reply@miapp.com>',
+      to: email,
+      subject: 'Recuperación de contraseña',
+      text: `Hacé clic en este enlace para restablecer tu contraseña: ${resetLink}`,
+      html: `<p>Hacé clic en este enlace para restablecer tu contraseña:</p>
+             <a href="${resetLink}">${resetLink}</a>`,
+    });
+
+    res.json({ message: 'Correo de recuperación enviado' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    await userService.resetPassword(token, newPassword);
+    res.json({ message: 'Contraseña actualizada con éxito' });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: err.message });
+  }
+};
