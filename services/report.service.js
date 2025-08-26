@@ -1,6 +1,6 @@
-const Product = require('../models/product.model');
-const Sale = require('../models/sale.model');
-const Purchase = require('../models/purchase.model');
+const { Product } = require('../models');
+const { Sale } = require('../models');
+const { Purchase  } = require('../models');
 const { Op, Sequelize } = require('sequelize');
 
 const getLowStockProducts = async () => {

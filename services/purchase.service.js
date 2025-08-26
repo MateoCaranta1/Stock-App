@@ -1,6 +1,6 @@
-const Purchase = require('../models/purchase.model');
-const PurchaseDetail = require('../models/purchaseDetail.model');
-const Product = require('../models/product.model');
+const { Purchase } = require('../models');
+const { PurchaseDetail } = require('../models');
+const { Product } = require('../models');
 const { User } = require('../models');
 const { validate: isUUID } = require('uuid');
 

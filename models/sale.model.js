@@ -1,23 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const Sale = sequelize.define('Sale', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  userId: {
-    type: DataTypes.UUID, // Debe coincidir con User.id
-    allowNull: false,
-  },
-  fecha: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  }
-}, {
-  tableName: 'Sales',
-  timestamps: true,
-});
-
-module.exports = Sale;
+module.exports = (sequelize, DataTypes) => {
+  return sequelize.define('Sale', {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.UUID, allowNull: false },
+    fecha: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+  }, {
+    tableName: 'Sales',
+    timestamps: true,
+  });
+};

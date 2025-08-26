@@ -50,6 +50,7 @@ exports.login = async (req, res) => {
     );
     res.status(200).json({ token });
   } catch (err) {
+    console.error('LOGIN ERROR: ', err);
     res.status(500).json({ error: 'Error al iniciar sesión.' });
   }
 };
