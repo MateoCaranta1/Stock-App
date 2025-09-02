@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STOCK-APP</title>
+  <link rel="stylesheet" href="./style/user.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <h1 class="logo">STOCK-APP</h1>
+      <ul class="nav-links">
+        <li><a href="#" id="link-register">Registro</a></li>
+        <li><a href="#" id="link-login">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Registro -->
+    <section id="register-section" class="card hidden">
+      <h2>Registro</h2>
+      <form id="register-form">
+        <input type="email" id="register-email" placeholder="Email" required>
+        <input type="password" id="register-password" placeholder="Contraseña" required>
+        <button type="submit" class="btn">Registrarse</button>
+      </form>
+      <p id="register-msg"></p>
+    </section>
+
+    <!-- Login -->
+    <section id="login-section" class="card hidden">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Contraseña" required>
+        <button type="submit" class="btn">Iniciar Sesión</button>
+      </form>
+      <p id="login-msg"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 MiApp</p>
+  </footer>
+
+  <script src="./viewJs/userView.js"></script>
+</body>
+</html>
