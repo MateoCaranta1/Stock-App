@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas - MiApp</title>
+    <link rel="stylesheet" href="./style/sale.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <h1 class="logo">MiApp</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Usuarios</a></li>
+                <li><a href="sales.html">Ventas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Crear venta -->
+        <section class="card">
+            <h2>Registrar Venta</h2>
+            <form id="sale-form">
+                <div id="productos-container">
+                    <div class="producto-item">
+                        <input type="text" placeholder="Nombre producto" class="producto-nombre" required>
+                        <input type="number" placeholder="Cantidad" class="producto-cantidad" min="1" required>
+                        <input type="number" placeholder="Precio" class="producto-precio" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secundario" id="add-product">+ Producto</button>
+                <button type="submit" class="btn">Registrar Venta</button>
+            </form>
+            <p id="sale-msg"></p>
+        </section>
+
+        <!-- Listar ventas -->
+        <section class="card">
+            <h2>Mis Ventas</h2>
+            <button id="load-sales" class="btn">Cargar Ventas</button>
+            <ul id="sales-list"></ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 MiApp</p>
+    </footer>
+
+    <script src="./viewJs/saleView.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - MiApp</title>
+    <link rel="stylesheet" href="./style/product.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <h1 class="logo">MiApp</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Usuarios</a></li>
+                <li><a href="sales.html">Ventas</a></li>
+                <li><a href="purchases.html">Compras</a></li>
+                <li><a href="products.html">Productos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Crear producto -->
+        <section class="card">
+            <h2>Registrar Producto</h2>
+            <form id="product-form">
+                <input type="text" id="product-name" placeholder="Nombre" required>
+                <input type="number" id="product-price" placeholder="Precio" min="0" step="0.01" required>
+                <input type="number" id="product-stock" placeholder="Stock" min="0" required>
+                <button type="submit" class="btn">Agregar Producto</button>
+            </form>
+            <p id="product-msg"></p>
+        </section>
+
+        <!-- Listar productos -->
+        <section class="card">
+            <h2>Productos</h2>
+            <button id="load-products" class="btn">Cargar Productos</button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="products-table"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 MiApp</p>
+    </footer>
+
+    <script src="./viewJs/productView.js"></script>
+</body>
+
+</html>

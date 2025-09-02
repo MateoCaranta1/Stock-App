@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static('view'));
+
 
 // Rutas
 const productRoutes = require('./routes/product.routes');
